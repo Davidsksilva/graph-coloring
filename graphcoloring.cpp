@@ -36,7 +36,7 @@ int main(){
     }
     std::cout<<std::endl;
     }
-  heuristic_construction(adjacent_matrix,nVertices);
+  heuristic_constructor(adjacent_matrix,nVertices);
 
 
 }
