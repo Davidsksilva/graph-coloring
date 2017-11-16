@@ -25,11 +25,12 @@ void change_vertices_color(const int,const int,int*);
 bool vertex_left();
 void sum_adjacent_saturation(const int);
 void print_graph_coloring();
-int count_colors(int*);
+int count_colors(Vertex*);
 void order_vertices(char);
 
 public:
-  int* heuristic_constructor();
+  Vertex* heuristic_constructor();
+  void vnd();
   void neighbourhood_search();
   void dsatur();
   Graph();

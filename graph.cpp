@@ -111,12 +111,12 @@ void Graph::dsatur(){
     std::cout<<"V"<<vertices[i].id+1<<" C"<<vertices[i].color<<std::endl;
   }
 }
-int Graph::count_colors(int* color_array){
+int Graph::count_colors(Vertex* vertices){
   std::vector<int> aux;
   int colors=0;
   for(int i=0;i<vertices_number;i++){
-    if(!(std::find(aux.begin(), aux.end(), color_array[i]) != aux.end())){
-      aux.push_back(color_array[i]);
+    if(!(std::find(aux.begin(), aux.end(), vertices[i].color) != aux.end())){
+      aux.push_back(vertices[i].color);
       colors++;
     }
   }
@@ -152,7 +152,7 @@ bool Graph::search_color_adjacent_dsatur(const int id,const int color){
   return false;
 }
 
-int* Graph::heuristic_constructor(){
+Vertex* Graph::heuristic_constructor(){
     for(int i=0;i<vertices_number;i++){
       int proposed_color=0;
       while(search_color_adjacent(i,proposed_color)){
@@ -161,7 +161,7 @@ int* Graph::heuristic_constructor(){
       vertices[i].color=proposed_color;
     }
     print_graph_coloring();
-    return vertex_colors;
+    return vertices;
 }
 bool Graph::check_vertices_color(const int color_in,const int color_out,int* vertex_colors){
   for(int i=0;i<vertices_number;i++){
@@ -172,9 +172,42 @@ bool Graph::check_vertices_color(const int color_in,const int color_out,int* ver
   }
   return true;
 }
-void Graph::neighbourhood_search(){
+void Graph::vnd(){
+  Vertex* base_solution=heuristic_constructor();
+  int color_count=count_colors(base_solution);
+  std::cout<<color_count<<std::endl;
+  std::vector<int> actual_colors;
+  for(int u=0;u<vertices_number;u++){
+    if(!(std::find(actual_colors.begin(), actual_colors.end(),base_solution[u].color) != actual_colors.end())){
+      actual_colors.push_back(base_solution[u].color);
+    }
+  }
+  for(int i=0;i<color_count;i++){
+    for(int j=0;j<vertices_number;j++){
+      if(base_solution[j].color == i){
+        for(int k=0;k<color_count;k++){
+          if(k != i && ((std::find(actual_colors.begin(), actual_colors.end(),k) != actual_colors.end()))){
+            if(!search_color_adjacent_dsatur(base_solution[j].id,k)){
+              base_solution[j].color=k;
+              break;
+            }
+          }
+        }
+      }
+    }
+    for(int u=0;u<vertices_number;u++){
+      if(!(std::find(actual_colors.begin(), actual_colors.end(),base_solution[u].color) != actual_colors.end())){
+        actual_colors.push_back(base_solution[u].color);
+      }
+    }
+  }
+  color_count=count_colors(base_solution);
+  print_graph_coloring();
+  std::cout<<color_count<<std::endl;
+}
+/*void Graph::neighbourhood_search(){
   std::vector<int> excluded_colors;
- int* optimized_vertex_colors=heuristic_constructor();
+ Vertex* optimized_vertex=heuristic_constructor();
  int color_count=count_colors(optimized_vertex_colors);
  std::cout<<"Initial colors: "<<color_count<<std::endl;
  for(int i=0;i<color_count;i++){
@@ -193,4 +226,4 @@ void Graph::neighbourhood_search(){
  }
  color_count=count_colors(optimized_vertex_colors);
 std::cout<<"Final colors: "<<color_count<<std::endl;
-}
+}*/

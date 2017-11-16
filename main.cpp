@@ -3,9 +3,10 @@
 
 int main(){
   Graph graph;
-  graph.heuristic_constructor();
+  graph.vnd();
+  //graph.heuristic_constructor();
   //graph.neighbourhood_search();
   std::cout<<std::endl;
-  graph.dsatur();
+//  graph.dsatur();
   return 0;
 }
