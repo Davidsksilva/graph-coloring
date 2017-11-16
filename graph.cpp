@@ -123,16 +123,16 @@ int Graph::count_colors(int* color_array){
   return colors;
 }
 void Graph::print_graph_coloring(){
-  for(int k=0;k<vertices_number;k++)
+  for(int i=0;i<vertices_number;i++)
   {
-    std::cout<<"V"<<k+1<<" C"<<vertex_colors[k]<<std::endl;
+      std::cout<<"V"<<vertices[i].id+1<<" C"<<vertices[i].color<<std::endl;
   }
 }
 bool Graph::search_color_adjacent(const int id,const int color){
   for(int j=0;j<vertices_number;j++){
     if(adjacent_matrix[id][j] != 0)
     {
-      if(vertex_colors[j] == color)
+      if(vertices[j].color == color)
         return true;
     }
   }
@@ -158,7 +158,7 @@ int* Graph::heuristic_constructor(){
       while(search_color_adjacent(i,proposed_color)){
         proposed_color++;
       }
-      vertex_colors[i]=proposed_color;
+      vertices[i].color=proposed_color;
     }
     print_graph_coloring();
     return vertex_colors;
