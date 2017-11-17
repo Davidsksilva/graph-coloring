@@ -6,7 +6,7 @@ This code is a project for the discipline Analysis and Project of Algorithms, in
 
 In the Graph Coloring problem, we aim to color the verticies of a graph, in a way that two vertices of the same color are not adjacent to each other. Using the minimum number of colors possible.
 
-![alt text](http://www.geeksforgeeks.org/wp-content/uploads/vertex_coloring.png)
+![Vertex_Coloring](vertex_coloring.png)
 
 ## Solutions implemented
 
