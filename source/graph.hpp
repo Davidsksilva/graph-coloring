@@ -32,7 +32,7 @@ public:
   Vertex* heuristic_constructor();
   void vnd();
   void neighbourhood_search();
-  void dsatur();
+  Vertex* dsatur();
   Graph();
 
 };

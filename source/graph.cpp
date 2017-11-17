@@ -5,7 +5,7 @@
 #include <limits.h>
 
 Graph::Graph(){
-  adjacent_matrix = ReadFile("inputs/miles500.col", &vertices_number);
+  adjacent_matrix = ReadFile("inputs/qgorder30.col", &vertices_number);
   vertices = new Vertex[vertices_number];
   for(int i=0;i<vertices_number;i++){
     vertices[i].color=-1;
@@ -78,7 +78,7 @@ void Graph::sum_adjacent_saturation(const int id){
     }
   }
 }
-void Graph::dsatur(){
+Vertex* Graph::dsatur(){
   order_vertices('d');
   vertices[0].colored=true;
   vertices[0].saturation= INT_MIN;
@@ -103,9 +103,10 @@ void Graph::dsatur(){
     order_vertices('s');
   }
 
-  for(int i=0;i<vertices_number;i++){
-    std::cout<<"V"<<vertices[i].id+1<<" C"<<vertices[i].color<<std::endl;
-  }
+  int color_count=count_colors(vertices);
+  print_graph_coloring();
+  std::cout<<color_count<<std::endl;
+  return vertices;
 }
 int Graph::count_colors(Vertex* vertices){
   std::vector<int> aux;
@@ -169,7 +170,7 @@ bool Graph::check_vertices_color(const int color_in,const int color_out,int* ver
   return true;
 }
 void Graph::vnd(){
-  Vertex* base_solution=heuristic_constructor();
+  Vertex* base_solution=dsatur();
   int color_count=count_colors(base_solution);
   std::cout<<color_count<<std::endl;
   std::vector<int> actual_colors;
