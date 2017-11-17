@@ -24,12 +24,12 @@ for each myvertex on the adjacent matrix
 ````
 * **DSATUR**
 
-* **VND** - Used to try to eliminate colors from an early coloring.
+* **VND** - Aims to eliminate colors from an early coloring, by trying to eliminate color *x*, changing all vertices colored with *x* to the other colors.
 ````
 for each mycolor on the graph coloring
   for each myvertex colored with mycolor
     for each other proposedcolor on the graph coloring
-      if(there is no adjacent vertex colored with proposedcolor && proposedcolor != mycolor && proposedcolor is colored in the graph)
+      if(there is no adjacent vertex colored with proposedcolor && proposedcolor != mycolor && proposedcolor is in the graph)
         myvertex.color=proposedcolor;
         break;
     check which colors are on the graph
