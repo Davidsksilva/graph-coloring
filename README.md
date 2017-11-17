@@ -41,6 +41,8 @@ adjacent_matrix = ReadFile("inputs/<input-name>.col", &vertices_number);
 ```
 With <input-name> being the name of the .col input to be tested.
 
+To find more test inputs, click [Here](http://cse.unl.edu/~tnguyen/npbenchmarks/graphcoloring.html)
+
 ## Built With
 
 * [Atom](https://atom.io/) - Used for code editting.
