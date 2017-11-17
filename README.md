@@ -37,9 +37,9 @@ And next:
 There is a directory called inputs with a number of graphs to test, to change the graph that's going to be colored, in /source/graph.cpp , on Graph::Graph():
 
 ```
-adjacent_matrix = ReadFile("inputs/<input-name>.col", &vertices_number);
+adjacent_matrix = ReadFile("inputs/**input-name**.col", &vertices_number);
 ```
-With <input-name> being the name of the .col input to be tested.
+With **input-name** being the name of the .col input to be tested.
 
 To find more test inputs, click [Here](http://cse.unl.edu/~tnguyen/npbenchmarks/graphcoloring.html)
 
