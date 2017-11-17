@@ -6,6 +6,13 @@ This code is a project for the discipline Analysis and Project of Algorithms, in
 
 In the Graph Coloring problem, we aim to color the verticies of a graph, in a way that two vertices of the same color are not adjacent to each other. Using the minimum number of colors possible.
 
+## Solutions implemented
+
+* **Greedy Coloring**
+* **VND**
+* **DSATUR**
+
+
 ## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
