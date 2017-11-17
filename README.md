@@ -2,15 +2,26 @@
 
 This code is a project for the discipline Analysis and Project of Algorithms, in the Federal University of Paraiba, Brazil.
 
+In this project, we aim to implement a heuristic to resolve the Graph Coloring problem.
+
 ## Introduction to the problem
 
 In the Graph Coloring problem, we aim to color the verticies of a graph, in a way that two vertices of the same color are not adjacent to each other. Using the minimum number of colors possible.
 
 ![Vertex_Coloring](vertex_coloring.png)
 
+You can see above a valid coloring for the graph.
+
 ## Solutions implemented
 
-* **Greedy Coloring**
+* **Construction Heuristic**
+````
+for each myvertex on the adjacent matrix
+  mycolor = 0;
+  while(there is a adjacent vertex with mycolor)
+    mycolor++;
+  myvertex.color = mycolor;
+````
 * **VND**
 * **DSATUR**
 
