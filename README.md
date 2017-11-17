@@ -22,7 +22,16 @@ for each myvertex on the adjacent matrix
     mycolor++;
   myvertex.color = mycolor;
 ````
-* **DSATUR**
+* **DSATUR** - Heuristic to the Graph Coloring problem, created by Daniel Brélaz in 1979
+  1.Order the vertices in descending order of degrees.
+  1.Color a vertex of maximum degree with color 1.
+  1.Choose a vertex with maximum DSAT. In case of equality, choose a vertex of maximum degree.
+  1.Color this top with the smallest possible color
+  1.If all the vertices are colored then stop. Otherwise go in 3.
+
+  ````
+   DSAT (v) = number of different colors in vertices adjacent to v
+  ````
 
 * **VND** - Aims to eliminate colors from an early coloring, by trying to eliminate color *x*, changing all vertices colored with *x* to the other colors.
 ````
