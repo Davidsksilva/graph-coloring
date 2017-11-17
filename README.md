@@ -12,18 +12,28 @@ In the Graph Coloring problem, we aim to color the verticies of a graph, in a wa
 
 You can see above a valid coloring for the graph.
 
-## Solutions implemented
+## Algorithms implemented
 
-* **Construction Heuristic**
+* **Construction Heuristic** - Used to build a first coloring.
 ````
 for each myvertex on the adjacent matrix
   mycolor = 0;
-  while(there is a adjacent vertex with mycolor)
+  while(there is a adjacent vertex colored with mycolor)
     mycolor++;
   myvertex.color = mycolor;
 ````
-* **VND**
 * **DSATUR**
+* **VND** - Used to try to eliminate colors from an early coloring.
+````
+for each mycolor on the graph coloring
+  for each myvertex colored with mycolor
+    for each other proposedcolor on the graph coloring
+      if(there is no adjacent vertex colored with proposedcolor && proposedcolor != mycolor && proposed color is colored in the graph)
+        myvertex.color=proposedcolor;
+        break;
+    check which colors are on the graph
+````
+
 
 
 ## Getting Started
