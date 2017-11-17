@@ -23,12 +23,13 @@ for each myvertex on the adjacent matrix
   myvertex.color = mycolor;
 ````
 * **DSATUR**
+
 * **VND** - Used to try to eliminate colors from an early coloring.
 ````
 for each mycolor on the graph coloring
   for each myvertex colored with mycolor
     for each other proposedcolor on the graph coloring
-      if(there is no adjacent vertex colored with proposedcolor && proposedcolor != mycolor && proposed color is colored in the graph)
+      if(there is no adjacent vertex colored with proposedcolor && proposedcolor != mycolor && proposedcolor is colored in the graph)
         myvertex.color=proposedcolor;
         break;
     check which colors are on the graph
