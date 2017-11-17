@@ -5,19 +5,15 @@
 #include <limits.h>
 
 Graph::Graph(){
-  vertices_number= getMatrixSize("teste.txt");
-  adjacent_matrix = readMatrix(vertices_number,"teste.txt");
-  vertex_colors = new int[vertices_number];
+  adjacent_matrix = ReadFile("inputs/miles500.col", &vertices_number);
   vertices = new Vertex[vertices_number];
   for(int i=0;i<vertices_number;i++){
-    vertex_colors[i]=-1;
     vertices[i].color=-1;
     vertices[i].saturation=0;
     vertices[i].id=i;
     vertices[i].degree=0;
     vertices[i].colored=false;
   }
-
   for(int i=0;i<vertices_number;i++){
     for(int j=0;j<vertices_number;j++){
       if(adjacent_matrix[i][j] != 0){
