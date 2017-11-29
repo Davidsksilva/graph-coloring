@@ -84,7 +84,6 @@ Vertex* Graph::dsatur(){
   vertices[0].saturation= INT_MIN;
   sum_adjacent_saturation(vertices[0].id);
   vertices[0].color=0;
-  std::cout<<vertices[0].id+1<<std::endl;
   order_vertices('s');
   while(vertex_left()){
     for(int i=0;i<vertices_number;i++){
@@ -104,7 +103,7 @@ Vertex* Graph::dsatur(){
   }
 
   int color_count=count_colors(vertices);
-  print_graph_coloring();
+  //print_graph_coloring();
   std::cout<<color_count<<std::endl;
   return vertices;
 }
@@ -148,8 +147,8 @@ bool Graph::search_color_adjacent_dsatur(const int id,const int color){
   }
   return false;
 }
-
 Vertex* Graph::heuristic_constructor(){
+    std::cout<<"--------------CONSTRUCTOR-------------"<<std::endl;
     for(int i=0;i<vertices_number;i++){
       int proposed_color=0;
       while(search_color_adjacent(i,proposed_color)){
@@ -157,7 +156,9 @@ Vertex* Graph::heuristic_constructor(){
       }
       vertices[i].color=proposed_color;
     }
-    print_graph_coloring();
+    int color_count=count_colors(vertices);
+    //print_graph_coloring();
+    std::cout<<color_count<<std::endl;
     return vertices;
 }
 bool Graph::check_vertices_color(const int color_in,const int color_out,int* vertex_colors){
@@ -170,9 +171,10 @@ bool Graph::check_vertices_color(const int color_in,const int color_out,int* ver
   return true;
 }
 void Graph::vnd(){
+  std::cout<<"--------------DSATUR-------------"<<std::endl;
   Vertex* base_solution=dsatur();
+  std::cout<<"--------------VND-------------"<<std::endl;
   int color_count=count_colors(base_solution);
-  std::cout<<color_count<<std::endl;
   std::vector<int> actual_colors;
   for(int u=0;u<vertices_number;u++){
     if(!(std::find(actual_colors.begin(), actual_colors.end(),base_solution[u].color) != actual_colors.end())){
@@ -199,38 +201,117 @@ void Graph::vnd(){
     }
   }
   color_count=count_colors(base_solution);
-  print_graph_coloring();
+  //print_graph_coloring();
   std::cout<<color_count<<std::endl;
 }
+void Graph::sum_adjacent_saturation(const int id,std::vector<Vertex> &vector){
+  for(int i=0;i<vertices_number;i++){
+    if(adjacent_matrix[id][i] != 0){
+      for(unsigned int j=0;j<vector.size();j++){
+        if(!vector[j].colored && vector[j].id == i){
+          vector[j].saturation++;
+        }
+      }
+    }
+  }
+}
+bool Graph::search_color_adjacent(const int id,const int color,std::vector<Vertex> &vector){
+  for(int j=0;j<vertices_number;j++){
+    if(adjacent_matrix[id][j] != 0)
+    {
+      for(unsigned int i=0;i<vector.size();i++){
+        if(vector[i].id == j && vector[i].color == color){
+            return true;
+        }
+      }
+    }
+  }
+  return false;
+}
+void Graph::order_vertices(char op,std::vector<Vertex> &vector){
+  switch(op){
+    case 's':{
+      int a;
+      Vertex temp;
+      for(unsigned int i=0;i<vector.size();i++){
+        a=i;
+        for(unsigned int j=i+1;j<vector.size();j++){
+          if(vector[j].saturation > vector[a].saturation)
+            a=j;
+          else if(vector[j].saturation == vector[a].saturation){
+            if(vector[j].degree > vector[a].degree)
+              a=j;
+          }
+        }
+        temp=vector[i];
+        vector[i]=vector[a];
+        vector[a]=temp;
+      }
+      break;
+    }
+    case 'd':{
+      int a;
+      Vertex temp;
+      for(unsigned int i=0;i<vector.size();i++){
+        a=i;
+        for(unsigned int j=i+1;j<vector.size();j++){
+          if(vector[j].degree > vector[a].degree)
+            a=j;
+        }
+        temp=vector[i];
+        vector[i]=vector[a];
+        vector[a]=temp;
+      }
+      break;
+    }
+  }
+}
 void Graph::grasp(){
+  order_vertices('s');
   order_vertices('d');
-
+  std::cout<<"--------------GRASP-------------"<<std::endl;
+//Inicializa a lista inicial de candidatos
   std::vector<Vertex> candidatos_iniciais;
   for(int i=0;i<vertices_number;i++){
-    candidatos_iniciais.push_back(vertices[0]);
+    candidatos_iniciais.push_back(vertices[i]);
   }
+  //Loop do grasp
   while(candidatos_iniciais.size() != 0){
+    order_vertices('s',candidatos_iniciais);
+    //Calcula o alfa
     int a=(candidatos_iniciais[0].saturation + candidatos_iniciais[candidatos_iniciais.size()-1].saturation)*0.50;
     std::vector<Vertex> candidatos_restritos;
-    for(int i=0;i<candidatos_iniciais.size();i++){
+    // Lista restrita com apenas os vertices com saturacao >= a
+    for(unsigned int i=0;i<candidatos_iniciais.size();i++){
       if(candidatos_iniciais[i].saturation >= a){
         candidatos_restritos.push_back(candidatos_iniciais[i]);
       }
     }
-    int randNum = rand()%(candidatos_restritos.size()-0 + 1) + 0;
-    if(!candidatos_restritos[randNum].colored){
-      candidatos_restritos[randNum].colored=true;
-      candidatos_restritos[randNum].saturation= INT_MIN;
-      sum_adjacent_saturation(candidatos_restritos[randNum].id);
+     // Pega um vertice randomico da lita restrita
+    int randNum = rand()%(candidatos_restritos.size()-1-0 + 1) + 0;
+    // Colore o vertice randomico
+    {
+      //Soma saturacao dos vertices adjacentes ao randomico
+      sum_adjacent_saturation(candidatos_restritos[randNum].id,candidatos_iniciais);
       int proposed_color=0;
-      while(search_color_adjacent_dsatur(candidatos_restritos[randNum].id,proposed_color)){
+      //Procura vertices adjacentes ao randomico com cor=proposed_color
+      while(search_color_adjacent(candidatos_restritos[randNum].id,proposed_color)){
         proposed_color++;
       }
-      candidatos_restritos[randNum].color=proposed_color;
+      //Colore a vertice randomico no array final da solucao
+      vertices[candidatos_restritos[randNum].id].color=proposed_color;
     }
-
-
-
+    //Exclui o vertice randomico da lista inicial
+    for(unsigned int i=0;candidatos_iniciais.size();i++){
+      if(candidatos_iniciais[i].id == candidatos_restritos[randNum].id){
+        candidatos_iniciais.erase(candidatos_iniciais.begin() + i);
+        break;
+      }
+    }
   }
+  //Exibe a coloracao
+  int color_count=count_colors(vertices);
+  //print_graph_coloring();
+  std::cout<<color_count<<std::endl;
 
 }
