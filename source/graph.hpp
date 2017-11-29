@@ -33,6 +33,7 @@ public:
   void vnd();
   void neighbourhood_search();
   Vertex* dsatur();
+  void grasp();
   Graph();
 
 };

@@ -5,7 +5,7 @@
 #include <limits.h>
 
 Graph::Graph(){
-  adjacent_matrix = ReadFile("inputs/qgorder30.col", &vertices_number);
+  adjacent_matrix = ReadFile("inputs/miles500.col", &vertices_number);
   vertices = new Vertex[vertices_number];
   for(int i=0;i<vertices_number;i++){
     vertices[i].color=-1;
@@ -202,25 +202,35 @@ void Graph::vnd(){
   print_graph_coloring();
   std::cout<<color_count<<std::endl;
 }
-/*void Graph::neighbourhood_search(){
-  std::vector<int> excluded_colors;
- Vertex* optimized_vertex=heuristic_constructor();
- int color_count=count_colors(optimized_vertex_colors);
- std::cout<<"Initial colors: "<<color_count<<std::endl;
- for(int i=0;i<color_count;i++){
-   for(int j=0;j<color_count;j++){
-     if((i!=j) && !(std::find(excluded_colors.begin(), excluded_colors.end(), j) != excluded_colors.end())){
-       if(check_vertices_color(i,j,optimized_vertex_colors)){
-         for(int k=0;k<vertices_number;k++){
-           if(optimized_vertex_colors[k] == i){
-             optimized_vertex_colors[k]=j;
-             excluded_colors.push_back(i);
-           }
-         }
-       }
-     }
-   }
- }
- color_count=count_colors(optimized_vertex_colors);
-std::cout<<"Final colors: "<<color_count<<std::endl;
-}*/
+void Graph::grasp(){
+  order_vertices('d');
+
+  std::vector<Vertex> candidatos_iniciais;
+  for(int i=0;i<vertices_number;i++){
+    candidatos_iniciais.push_back(vertices[0]);
+  }
+  while(candidatos_iniciais.size() != 0){
+    int a=(candidatos_iniciais[0].saturation + candidatos_iniciais[candidatos_iniciais.size()-1].saturation)*0.50;
+    std::vector<Vertex> candidatos_restritos;
+    for(int i=0;i<candidatos_iniciais.size();i++){
+      if(candidatos_iniciais[i].saturation >= a){
+        candidatos_restritos.push_back(candidatos_iniciais[i]);
+      }
+    }
+    int randNum = rand()%(candidatos_restritos.size()-0 + 1) + 0;
+    if(!candidatos_restritos[randNum].colored){
+      candidatos_restritos[randNum].colored=true;
+      candidatos_restritos[randNum].saturation= INT_MIN;
+      sum_adjacent_saturation(candidatos_restritos[randNum].id);
+      int proposed_color=0;
+      while(search_color_adjacent_dsatur(candidatos_restritos[randNum].id,proposed_color)){
+        proposed_color++;
+      }
+      candidatos_restritos[randNum].color=proposed_color;
+    }
+
+
+
+  }
+
+}
