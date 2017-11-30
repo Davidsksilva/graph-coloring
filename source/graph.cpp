@@ -5,7 +5,7 @@
 #include <limits.h>
 
 Graph::Graph(){
-  adjacent_matrix = ReadFile("inputs/miles500.col", &vertices_number);
+  adjacent_matrix = ReadFile("inputs/qgorder30.col", &vertices_number);
   vertices = new Vertex[vertices_number];
   for(int i=0;i<vertices_number;i++){
     vertices[i].color=-1;
@@ -361,9 +361,6 @@ void Graph::grasp()
     }
     int color_count = count_colors_grasp( basesolution_ );
     //std::cout <<color_count<<" "<<count_colors_grasp(bestsolution)<< std::endl;
-    if(bestsolution.empty()){
-      bestsolution=basesolution_;
-    }
     if( color_count < bsolution ){
           bestsolution=basesolution_;
     }
