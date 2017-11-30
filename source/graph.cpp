@@ -118,6 +118,17 @@ int Graph::count_colors(Vertex* vertices){
   }
   return colors;
 }
+int Graph::count_colors_grasp(std::vector<Vertex> vector){
+  std::vector<int> aux;
+  int colors=0;
+  for(unsigned int i=0;i<vector.size();i++){
+    if(!(std::find(aux.begin(), aux.end(), vector[i].color) != aux.end())){
+      aux.push_back(vector[i].color);
+      colors++;
+    }
+  }
+  return colors;
+}
 void Graph::print_graph_coloring(){
   for(int i=0;i<vertices_number;i++)
   {
@@ -171,8 +182,7 @@ bool Graph::check_vertices_color(const int color_in,const int color_out,int* ver
   return true;
 }
 void Graph::vnd(){
-  std::cout<<"--------------DSATUR-------------"<<std::endl;
-  Vertex* base_solution=dsatur();
+  Vertex* base_solution=heuristic_constructor();
   std::cout<<"--------------VND-------------"<<std::endl;
   int color_count=count_colors(base_solution);
   std::vector<int> actual_colors;
@@ -215,7 +225,17 @@ void Graph::sum_adjacent_saturation(const int id,std::vector<Vertex> &vector){
     }
   }
 }
-bool Graph::search_color_adjacent(const int id,const int color,std::vector<Vertex> &vector){
+bool Graph::search_color_adjacent(const int id,const int color,Vertex* arr){
+  for(int j=0;j<vertices_number;j++){
+    if(adjacent_matrix[id][j] != 0)
+    {
+      if(arr[j].color == color)
+        return true;
+    }
+  }
+  return false;
+}
+bool Graph::search_color_adjacent_grasp(const int id,const int color,std::vector<Vertex> vector){
   for(int j=0;j<vertices_number;j++){
     if(adjacent_matrix[id][j] != 0)
     {
@@ -226,7 +246,7 @@ bool Graph::search_color_adjacent(const int id,const int color,std::vector<Verte
       }
     }
   }
-  return false;
+return false;
 }
 void Graph::order_vertices(char op,std::vector<Vertex> &vector){
   switch(op){
@@ -266,20 +286,114 @@ void Graph::order_vertices(char op,std::vector<Vertex> &vector){
     }
   }
 }
-void Graph::grasp(){
-  order_vertices('s');
-  order_vertices('d');
-  std::cout<<"--------------GRASP-------------"<<std::endl;
-//Inicializa a lista inicial de candidatos
-  std::vector<Vertex> candidatos_iniciais;
+bool Graph::check_colorability(std::vector<Vertex> vector){
   for(int i=0;i<vertices_number;i++){
-    candidatos_iniciais.push_back(vertices[i]);
+    for(int j=0;j<vertices_number;j++){
+    if(adjacent_matrix[i][j] != 0){
+      for(unsigned int k=0;k<vector.size();k++){
+        for(unsigned int u=0;u<vector.size();u++)
+        if(vector[k].id == j && vector[u].id== i){
+          if(vector[k].color == vector[u].color)
+            return false;
+        }
+      }
+    }
+    }
+  }
+  return true;
+}
+void Graph::grasp()
+{
+  std::vector<Vertex> bestsolution;
+  std::vector<Vertex> basesolutions;
+  std::vector<int> solutions;
+  int bsolution;
+  std::cout<<"--------------GRASP-------------"<<std::endl;
+  for( int p = 0; p < 50; p++ )
+  {
+    if(bestsolution.empty()){
+      bsolution=INT_MAX;
+    }
+    else{
+          bsolution= count_colors_grasp(bestsolution);
+    }
+    Vertex* basesolution= grasp_constructor();
+    std::vector<Vertex> basesolution_;
+    for( int i = 0; i < vertices_number; ++i )
+      basesolution_.push_back( basesolution[i] );
+
+    int solution = count_colors_grasp( basesolution_ );
+    std::vector<int> actualcolors;
+
+    for( int l = 0; l < vertices_number; ++l )
+      if( !( std::find( actualcolors.begin(), actualcolors.end(), basesolution[l].color ) != actualcolors.end() ) )
+        actualcolors.push_back( basesolution_[l].color );
+
+    int i = rand()%(solution-0 + 1) + 0;
+
+    if( !(std::find( actualcolors.begin(), actualcolors.end(), i ) != actualcolors.end()) )
+      continue;
+
+    for( int j = 0; j < vertices_number; ++j )
+    {
+      if( basesolution_[j].color == i )
+      {
+        for( int k = 0; k < solution; ++k )
+        {
+          if( k != i && ( std::find( actualcolors.begin(), actualcolors.end(), k ) != actualcolors.end() ) )
+          {
+            if( !search_color_adjacent_grasp( basesolution_[j].id, k, basesolution_ ) )
+            {
+              basesolution_[j].color = k;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    for( int l = 0 ; l < vertices_number; ++l )
+    {
+      if( !( std::find( actualcolors.begin(), actualcolors.end(), basesolution_[l].color ) != actualcolors.end() ) )
+      {
+        actualcolors.push_back( basesolution_[l].color );
+      }
+    }
+    int color_count = count_colors_grasp( basesolution_ );
+    //std::cout <<color_count<<" "<<count_colors_grasp(bestsolution)<< std::endl;
+    if(bestsolution.empty()){
+      bestsolution=basesolution_;
+    }
+    if( color_count < bsolution ){
+          bestsolution=basesolution_;
+    }
+
+    std::cout<<count_colors_grasp(bestsolution)<< std::endl;
+  }
+  std::cout<<count_colors_grasp(bestsolution)<< std::endl;
+  if(check_colorability(bestsolution))
+    std::cout<<"apropriate colorability"<<std::endl;
+  else
+    std::cout<<"inaproprieate colorability"<<std::endl;
+
+}
+Vertex* Graph::grasp_constructor(){
+  //order_vertices('s');
+  //Inicializa a lista inicial de candidatos
+  std::vector<Vertex> candidatos_iniciais;
+  Vertex* solucao = new Vertex[vertices_number];
+  for(int i=0;i<vertices_number;i++){
+  solucao[i]=vertices[i];
+  }
+  for(int i=0;i<vertices_number;i++){
+    candidatos_iniciais.push_back(solucao[i]);
   }
   //Loop do grasp
   while(candidatos_iniciais.size() != 0){
+    int a;
     order_vertices('s',candidatos_iniciais);
     //Calcula o alfa
-    int a=(candidatos_iniciais[0].saturation + candidatos_iniciais[candidatos_iniciais.size()-1].saturation)*0.50;
+    a=(candidatos_iniciais[0].saturation + candidatos_iniciais[candidatos_iniciais.size()-1].saturation)*0.4;
     std::vector<Vertex> candidatos_restritos;
     // Lista restrita com apenas os vertices com saturacao >= a
     for(unsigned int i=0;i<candidatos_iniciais.size();i++){
@@ -295,11 +409,11 @@ void Graph::grasp(){
       sum_adjacent_saturation(candidatos_restritos[randNum].id,candidatos_iniciais);
       int proposed_color=0;
       //Procura vertices adjacentes ao randomico com cor=proposed_color
-      while(search_color_adjacent(candidatos_restritos[randNum].id,proposed_color)){
+      while(search_color_adjacent(candidatos_restritos[randNum].id,proposed_color,solucao)){
         proposed_color++;
       }
       //Colore a vertice randomico no array final da solucao
-      vertices[candidatos_restritos[randNum].id].color=proposed_color;
+      solucao[candidatos_restritos[randNum].id].color=proposed_color;
     }
     //Exclui o vertice randomico da lista inicial
     for(unsigned int i=0;candidatos_iniciais.size();i++){
@@ -310,8 +424,8 @@ void Graph::grasp(){
     }
   }
   //Exibe a coloracao
-  int color_count=count_colors(vertices);
+// int color_count=count_colors(vertices);
   //print_graph_coloring();
-  std::cout<<color_count<<std::endl;
-
+  //std::cout<<color_count<<std::endl;
+  return solucao;
 }

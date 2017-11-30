@@ -9,7 +9,7 @@ int main(){
   //graph.heuristic_constructor();
   //graph.neighbourhood_search();
   graph.grasp();
-  graph3.heuristic_constructor();
+  //graph3.heuristic_constructor();
   graph2.vnd();
   return 0;
 }
