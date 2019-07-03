@@ -81,7 +81,3 @@ adjacent_matrix = ReadFile("inputs/input-name.col", &vertices_number);
 ```
 With **input-name** being the name of the .col input to be tested.
 
-## Authors
-
-* **David Simon**- [Davidsksilva](https://github.com/Davidsksilva)
-* **Leoberto Soares**- [leossoaress](https://github.com/leossoaress)
